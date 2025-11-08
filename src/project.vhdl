@@ -56,6 +56,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
     -- INSIGNAL:
     -- 0: Kort morse
     -- 1: Lång morse
+    -- 2: Skippa
     -- 2: Spela upp från minne
     -- 3: Kryptera
     -- 4: Dekryptera
@@ -206,9 +207,9 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                 elsif STATE_Mrse = "010" then
                     if TIME_Mrse > 1000 then
                         TIME_Mrse <= TIME_Mrse - 1;
-                        uo_out(0) <= '1';
+                        uo_out <= "00000001";
                     elsif TIME_Mrse > 1 then
-                        uo_out(0) <= '0';
+                        uo_out <= "00000000";
                         TIME_Mrse <= TIME_Mrse - 1;
                     else 
                         I_SR_Mrse <= I_SR_Mrse + 1;
