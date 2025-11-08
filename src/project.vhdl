@@ -70,7 +70,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
     signal FLUSH_SR_Mrse : std_logic := '0';
     signal I_ROM_Mrse : integer range 0 to 31 := 0;
     
-    signal TIME_Mrse : integer range 0 to 16383 := 0;
+    signal TIME_Mrse : integer range 0 to 8191 := 0;
     signal STATE_Mrse : std_logic_vector(2 downto 0) := "000";
     
     begin
