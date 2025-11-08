@@ -219,7 +219,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                         when "11" =>
                             SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
                             STATE_Mrse <= "001";
-                            if SR_Mrse = "00000000" then
+                            if SR_Mrse = "11111111" then
                                 I_SR_Mrse <= I_SR_Mrse + 1;
                             end if; 
                             
@@ -234,16 +234,14 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                     end case;
 
                 elsif STATE_Mrse = "101" then
-
+                    
                     if I_ROM_Mrse < 31 then
-                        SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
-                        if SR_Mrse = "00000000" then
-                            I_ROM_Mrse <= I_ROM_Mrse + 1;
-                        else
+                        if SR_Mrse = ROM_Mrse(I_ROM_Mrse) then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
                             I_ROM_Mrse <= I_ROM_Mrse + 1;
-                        end if; 
-
+                        else
+                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);               
+                        end if;
                     else
                         I_ROM_Mrse <= 0;
                         STATE_Mrse <= "000";
@@ -252,14 +250,12 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
 
                 elsif STATE_Mrse = "110" then
                     if I_ROM_Mrse < 31 then
-                        SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
-                        if SR_Mrse = "00000000" then
-                            I_ROM_Mrse <= I_ROM_Mrse + 1;
-                        else
+                        if SR_Mrse = ROM_Mrse(I_ROM_Mrse) then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
                             I_ROM_Mrse <= I_ROM_Mrse + 1;
-                        end if; 
-
+                        else
+                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);               
+                        end if;
                     else
                         I_ROM_Mrse <= 0;
                         STATE_Mrse <= "000";
