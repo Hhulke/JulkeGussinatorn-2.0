@@ -57,8 +57,8 @@ async def test_project(dut):
     dut.ui_in.value = 8
     await ClockCycles(dut.clk, 100000)
     
-    for l in range(4):
-        for i in range(3):
+    for l in range(16):
+        for i in range(4):
             await ClockCycles(dut.clk, random.randint(5,43))
             dut.ui_in.value = random.randint(1,2)
             await ClockCycles(dut.clk, 100)
@@ -66,12 +66,11 @@ async def test_project(dut):
             await ClockCycles(dut.clk, 100)
 
         await ClockCycles(dut.clk, 100)
-        dut.ui_in.value = 4
 
-    await ClockCycles(dut.clk, 100)
+    await ClockCycles(dut.clk, 10000)
     dut.ui_in.value = 8
 
-    await ClockCycles(dut.clk, 100000)
+    await ClockCycles(dut.clk, 250000)
     dut.ui_in.value = 0
 
     await ClockCycles(dut.clk, 100000)
@@ -102,7 +101,7 @@ async def test_project(dut):
     await ClockCycles(dut.clk, 100000)
 
 
-    await ClockCycles(dut.clk, 100)
+    await ClockCycles(dut.clk, 100000)
 
     dut.rst_n.value = 1
 

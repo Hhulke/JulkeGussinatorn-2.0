@@ -110,12 +110,17 @@ begin
       );
       I_ROM_Mrse <= 0;
       I_SR_Mrse <= "000";
-
       -- Nolla utsignalerna
       uo_out <= "00000000";
     elsif rising_edge(clk) then
       if inc_ROM = '1' then
-        I_ROM_Mrse <= I_ROM_Mrse + 1;
+        if I_ROM_Mrse = 15 then
+            if I_SR_Mrse = 4 then
+                I_ROM_Mrse <= 0;
+            end if;
+        else
+            I_ROM_Mrse <= I_ROM_Mrse + 1;
+        end if;
       end if;
       ui_in_old <= ui_in(5 downto 0);
 
@@ -127,9 +132,6 @@ begin
         if (I_SR_Mrse = 4) then
           I_SR_Mrse <= "000";
           FLUSH_SR_Mrse <= '0';
-
-          -- ROM_Mrse(I_ROM_Mrse) <= SR_Mrse;
-          -- I_ROM_Mrse <= I_ROM_Mrse + 1;
           SR_Mrse <= "00000000";
 
         elsif (FLUSH_SR_Mrse = '1') or (ui_in_sync(0) = '1') or (ui_in_sync(1) = '1') then
@@ -155,7 +157,7 @@ begin
       end if;
 
       if STATE_Mrse = "001" then
-        if I_ROM_Mrse = 15 then
+        if I_ROM_Mrse = 15 and I_SR_Mrse = 3 then
           I_ROM_Mrse <= 0;
           I_SR_Mrse <= "000";
           STATE_Mrse <= "000";
