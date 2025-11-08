@@ -223,20 +223,6 @@ begin
         end if;
       elsif STATE_Mrse = "011" then
         case CELL_Mrse is
-          when "00" =>
-            SR_Mrse <= ROM_I_Mrse;
-            STATE_Mrse <= "001";
-            if SR_Mrse = "00000000" then
-              I_SR_Mrse <= I_SR_Mrse + 1;
-            end if;
-
-          when "11" =>
-            SR_Mrse <= ROM_I_Mrse;
-            STATE_Mrse <= "001";
-            if SR_Mrse = "11111111" then
-              I_SR_Mrse <= I_SR_Mrse + 1;
-            end if;
-
           when "01" =>
             TIME_Mrse <= 3000;
             STATE_Mrse <= "010";
@@ -244,7 +230,11 @@ begin
             TIME_Mrse <= 6000;
             STATE_Mrse <= "010";
           when others =>
-            null;
+            SR_Mrse <= ROM_I_Mrse;
+            STATE_Mrse <= "001";
+            if (SR_Mrse = "11111111") or (SR_Mrse = "00000000") then
+              I_SR_Mrse <= I_SR_Mrse + 1;
+            end if;
         end case;
 
       elsif (STATE_Mrse = "101") or (STATE_Mrse = "110") then
