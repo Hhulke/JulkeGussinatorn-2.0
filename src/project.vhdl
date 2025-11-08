@@ -53,6 +53,13 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
             "00000000"
         );
 
+    -- INSIGNAL:
+    -- 0: Kort morse
+    -- 1: Lång morse
+    -- 2: Spela upp från minne
+    -- 3: Kryptera
+    -- 4: Dekryptera
+
     signal ASCELL_Mrse : std_logic_vector(1 downto 0) := "00";
     signal CELL_Mrse : std_logic_vector(1 downto 0) := "00";
     signal ui_in_old : std_logic_vector(5 downto 0) := "000000";
@@ -233,8 +240,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                             null;
                     end case;
 
-                elsif STATE_Mrse = "101" then
-                    
+                elsif STATE_Mrse = "101" then                   
                     if I_ROM_Mrse < 31 then
                         if SR_Mrse = ROM_Mrse(I_ROM_Mrse) then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
@@ -245,7 +251,6 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                     else
                         I_ROM_Mrse <= 0;
                         STATE_Mrse <= "000";
-
                     end if;
 
                 elsif STATE_Mrse = "110" then
@@ -259,7 +264,6 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                     else
                         I_ROM_Mrse <= 0;
                         STATE_Mrse <= "000";
-
                     end if;
                 
                 end if;
