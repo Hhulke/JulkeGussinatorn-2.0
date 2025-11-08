@@ -244,20 +244,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                             null;
                     end case;
 
-                elsif STATE_Mrse = "101" then                   
-                    if I_ROM_Mrse < 31 then
-                        if SR_Mrse = ROM_I_Mrse then
-                            ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
-                            I_ROM_Mrse <= I_ROM_Mrse + 1;
-                        else
-                            SR_Mrse <= ROM_I_Mrse;               
-                        end if;
-                    else
-                        I_ROM_Mrse <= 0;
-                        STATE_Mrse <= "000";
-                    end if;
-
-                elsif STATE_Mrse = "110" then
+                elsif (STATE_Mrse = "101") or (STATE_Mrse = "110") then                   
                     if I_ROM_Mrse < 31 then
                         if SR_Mrse = ROM_I_Mrse then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
