@@ -74,7 +74,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
   signal STATE_Mrse                   : std_logic_vector(2 downto 0) := "000";
   signal write_normal, write_inverted : std_logic                    := '0';
   signal write_value                  : std_logic_vector(7 downto 0) := "00000000";
-  signal inc_SR                       : std_logic                    := '0';
+  signal SR_P1                        : unsigned(2 downto 0)         := "000";
   signal inc_ROM                      : std_logic                    := '0';
 
 begin
@@ -84,6 +84,7 @@ begin
   ui_in_sync <= ui_in(5 downto 0) and not ui_in_old;
 
   ROM_I_Mrse <= ROM_Mrse(I_ROM_Mrse);
+  SR_P1      <= I_SR_Mrse + 1;
 
   process (ui_in_sync, FLUSH_SR_Mrse)
   begin
@@ -97,7 +98,7 @@ begin
 
   write_normal   <= '1' when (STATE_Mrse = "000" and I_SR_Mrse = 4) else '0';
   write_inverted <= '1' when ((STATE_Mrse = "101") or (STATE_Mrse = "110")) and I_ROM_Mrse < 31 and SR_Mrse = ROM_I_Mrse else '0';
-  inc_ROM <= '1' when ((write_inverted = '1') or (write_normal = '1')) or (STATE_Mrse = "001" and I_SR_Mrse = 3) else '0';
+  inc_ROM        <= '1' when ((write_inverted = '1') or (write_normal = '1')) or (STATE_Mrse = "001" and I_SR_Mrse = 3) else '0';
   write_value    <= not SR_Mrse when write_inverted = '1' else SR_Mrse;
 
   process (clk, rst_n)
@@ -161,13 +162,12 @@ begin
 
           -- ROM_Mrse(I_ROM_Mrse) <= SR_Mrse;
           -- I_ROM_Mrse <= I_ROM_Mrse + 1;
-
           SR_Mrse <= "00000000";
 
         elsif (FLUSH_SR_Mrse = '1') or (ui_in_sync(0) = '1') or (ui_in_sync(1) = '1') then
           SR_Mrse <= SR_Mrse(5 downto 0) & ASCELL_Mrse;
 
-          I_SR_Mrse <= I_SR_Mrse + 1;
+          I_SR_Mrse <= SR_P1;
 
         end if;
       end if;
@@ -222,7 +222,7 @@ begin
         elsif TIME_Mrse > 1 then
           uo_out <= "00000000";
         else
-          I_SR_Mrse <= I_SR_Mrse + 1;
+          I_SR_Mrse <= SR_P1;
           STATE_Mrse <= "001";
         end if;
 
@@ -238,7 +238,7 @@ begin
             SR_Mrse <= ROM_I_Mrse;
             STATE_Mrse <= "001";
             if (SR_Mrse = "11111111") or (SR_Mrse = "00000000") then
-              I_SR_Mrse <= I_SR_Mrse + 1;
+              I_SR_Mrse <= SR_P1;
             end if;
         end case;
 
