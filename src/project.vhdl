@@ -74,6 +74,8 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
   signal STATE_Mrse                   : std_logic_vector(2 downto 0) := "000";
   signal write_normal, write_inverted : std_logic                    := '0';
   signal write_value                  : std_logic_vector(7 downto 0) := "00000000";
+  signal inc_SR                       : std_logic                    := '0';
+  signal inc_ROM                      : std_logic                    := '0';
 
 begin
   uio_out <= "00000000";
@@ -95,6 +97,7 @@ begin
 
   write_normal   <= '1' when (STATE_Mrse = "000" and I_SR_Mrse = 4) else '0';
   write_inverted <= '1' when ((STATE_Mrse = "101") or (STATE_Mrse = "110")) and I_ROM_Mrse < 31 and SR_Mrse = ROM_I_Mrse else '0';
+  inc_ROM <= '1' when ((write_inverted = '1') or (write_normal = '1')) or (STATE_Mrse = "001" and I_SR_Mrse = 3) else '0';
   write_value    <= not SR_Mrse when write_inverted = '1' else SR_Mrse;
 
   process (clk, rst_n)
@@ -142,7 +145,9 @@ begin
       -- Nolla utsignalerna
       uo_out <= "00000000";
     elsif rising_edge(clk) then
-
+      if inc_ROM = '1' then
+        I_ROM_Mrse <= I_ROM_Mrse + 1;
+      end if;
       ui_in_old <= ui_in(5 downto 0);
 
       if STATE_Mrse = "000" then
@@ -155,7 +160,7 @@ begin
           FLUSH_SR_Mrse <= '0';
 
           -- ROM_Mrse(I_ROM_Mrse) <= SR_Mrse;
-          I_ROM_Mrse <= I_ROM_Mrse + 1;
+          -- I_ROM_Mrse <= I_ROM_Mrse + 1;
 
           SR_Mrse <= "00000000";
 
@@ -192,7 +197,7 @@ begin
 
         if I_SR_Mrse = 3 then
           I_SR_Mrse <= "000";
-          I_ROM_Mrse <= I_ROM_Mrse + 1;
+          -- I_ROM_Mrse <= I_ROM_Mrse + 1;
         end if;
 
         SR_Mrse <= ROM_I_Mrse;
@@ -211,16 +216,16 @@ begin
         end case;
 
       elsif STATE_Mrse = "010" then
+        TIME_Mrse <= TIME_Mrse - 1;
         if TIME_Mrse > 1000 then
-          TIME_Mrse <= TIME_Mrse - 1;
           uo_out <= "00000001";
         elsif TIME_Mrse > 1 then
           uo_out <= "00000000";
-          TIME_Mrse <= TIME_Mrse - 1;
         else
           I_SR_Mrse <= I_SR_Mrse + 1;
           STATE_Mrse <= "001";
         end if;
+
       elsif STATE_Mrse = "011" then
         case CELL_Mrse is
           when "01" =>
@@ -241,7 +246,7 @@ begin
         if I_ROM_Mrse < 31 then
           if SR_Mrse = ROM_I_Mrse then
             -- ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
-            I_ROM_Mrse <= I_ROM_Mrse + 1;
+            -- I_ROM_Mrse <= I_ROM_Mrse + 1;
           else
             SR_Mrse <= ROM_I_Mrse;
           end if;
