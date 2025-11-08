@@ -12,7 +12,7 @@ async def test_project(dut):
     dut._log.info("Start")
 
     # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.clk, 10, unit="us")
     cocotb.start_soon(clock.start())
 
     # Reset
@@ -30,15 +30,20 @@ async def test_project(dut):
 
     # Wait for one clock cycle to see the output values
     for l in range(3):
+        dut._log.info("Beggining morse")
         for i in range(3):
             await ClockCycles(dut.clk, random.randint(5,43))
+            dut._log.info("Beggining more morse")
             dut.ui_in.value = 2
             await ClockCycles(dut.clk, 100)
             dut.ui_in.value = 0
             await ClockCycles(dut.clk, 100)
+            dut._log.info("Sent morse")
 
         await ClockCycles(dut.clk, 100)
         dut.ui_in.value = 4
+
+        dut._log.info("Next")
 
     await ClockCycles(dut.clk, 100)
     dut.ui_in.value = 8
@@ -49,7 +54,7 @@ async def test_project(dut):
 
     await ClockCycles(dut.clk, 100)
 
-    for l in range(3):
+    for l in range(4):
         for i in range(3):
             await ClockCycles(dut.clk, random.randint(5,43))
             dut.ui_in.value = random.randint(1,2)
@@ -64,7 +69,6 @@ async def test_project(dut):
     dut.ui_in.value = 8
 
     await ClockCycles(dut.clk, 100000)
-
     dut.ui_in.value = 0
 
     await ClockCycles(dut.clk, 100000)
@@ -73,20 +77,30 @@ async def test_project(dut):
     dut.ui_in.value = 16
 
     await ClockCycles(dut.clk, 100000)
+    dut.ui_in.value = 0
+
+    await ClockCycles(dut.clk, 100)
+    dut.ui_in.value = 8
 
     await ClockCycles(dut.clk, 100000)
 
+
+    await ClockCycles(dut.clk, 100000)
+
+    await ClockCycles(dut.clk, 100)
+    dut.ui_in.value = 32
+
+    await ClockCycles(dut.clk, 100000)
     dut.ui_in.value = 0
+
+    await ClockCycles(dut.clk, 100)
+    dut.ui_in.value = 8
+
+    await ClockCycles(dut.clk, 100000)
+
 
     await ClockCycles(dut.clk, 100)
 
     dut.rst_n.value = 1
 
     await ClockCycles(dut.clk, 100)
-
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    #assert dut.uo_out.value == 50
-
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
