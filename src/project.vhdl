@@ -66,6 +66,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
     signal ui_in_old : std_logic_vector(5 downto 0) := "000000";
     signal ui_in_sync : std_logic_vector(5 downto 0) := "000000";
     signal SR_Mrse : std_logic_vector(7 downto 0) := "00000000";
+    signal ROM_I_Mrse : std_logic_vector(7 downto 0) := "00000000"; 
     signal I_SR_Mrse : unsigned(2 downto 0) := "000";
     signal FLUSH_SR_Mrse : std_logic := '0';
     signal I_ROM_Mrse : integer range 0 to 31 := 0;
@@ -78,6 +79,8 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
         uio_oe  <= "00000000";
         
         ui_in_sync <= ui_in(5 downto 0) and not ui_in_old;
+
+        ROM_I_Mrse <= ROM_Mrse(I_ROM_Mrse);
 
         process(ui_in_sync, FLUSH_SR_Mrse) begin
             --Tilldela morsekod-värde;
@@ -189,7 +192,7 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                         I_ROM_Mrse <= I_ROM_Mrse + 1;
                     end if;
   
-                    SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
+                    SR_Mrse <= ROM_I_Mrse;
                     
                     case I_SR_Mrse is 
                         when "000" =>
@@ -218,14 +221,14 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
                 elsif STATE_Mrse = "011" then
                     case CELL_Mrse is
                         when "00" =>
-                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
+                            SR_Mrse <= ROM_I_Mrse;
                             STATE_Mrse <= "001";
                             if SR_Mrse = "00000000" then
                                 I_SR_Mrse <= I_SR_Mrse + 1;
                             end if; 
 
                         when "11" =>
-                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);
+                            SR_Mrse <= ROM_I_Mrse;
                             STATE_Mrse <= "001";
                             if SR_Mrse = "11111111" then
                                 I_SR_Mrse <= I_SR_Mrse + 1;
@@ -243,11 +246,11 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
 
                 elsif STATE_Mrse = "101" then                   
                     if I_ROM_Mrse < 31 then
-                        if SR_Mrse = ROM_Mrse(I_ROM_Mrse) then
+                        if SR_Mrse = ROM_I_Mrse then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
                             I_ROM_Mrse <= I_ROM_Mrse + 1;
                         else
-                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);               
+                            SR_Mrse <= ROM_I_Mrse;               
                         end if;
                     else
                         I_ROM_Mrse <= 0;
@@ -256,11 +259,11 @@ architecture Roxen of tt_um_julke_gussinatorn2 is
 
                 elsif STATE_Mrse = "110" then
                     if I_ROM_Mrse < 31 then
-                        if SR_Mrse = ROM_Mrse(I_ROM_Mrse) then
+                        if SR_Mrse = ROM_I_Mrse then
                             ROM_Mrse(I_ROM_Mrse) <= not SR_Mrse;
                             I_ROM_Mrse <= I_ROM_Mrse + 1;
                         else
-                            SR_Mrse <= ROM_Mrse(I_ROM_Mrse);               
+                            SR_Mrse <= ROM_I_Mrse;               
                         end if;
                     else
                         I_ROM_Mrse <= 0;
